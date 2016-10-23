@@ -25,8 +25,6 @@ const opts = require("nomnom")
     .parse();
 const address = Number(opts.address);
 const datax = Number(opts.data);
-console.log(opts.data);
-
 if (typeof address != "number"){
     console.log("The address needs to be a number.");
     process.exit(1);
@@ -57,7 +55,7 @@ client.on('data', (data) => {
         process.exit();
     } else {
         client.end();
-        process.exit();
+        process.exit(1);
     }
 });
 client.on('end', () => {
