@@ -7,12 +7,37 @@ const fa = Buffer.from("0d000a413f",'hex');
 const fd = Buffer.from("0d000a443f", 'hex');
 const o = Buffer.from("4f", 'hex');
 const k = Buffer.from("4b", 'hex');
-let d = [];
+const opts = require("nomnom")
+    .option('address', {
+        abbr: 'a',
+        full: 'address',
+        help: 'Address of target device',
+        required: true,
+        type: 'string'
+    })
+    .option('data', {
+        abbr: 'd',
+        full: 'data',
+        help: 'Data to set for target device',
+        required: true,
+        type: 'string'
+    })
+    .parse();
+const address = Number(opts.address);
+const datax = Number(opts.data);
+console.log(opts.data);
+
+if (typeof address != "number"){
+    console.log("The address needs to be a number.");
+    process.exit(1);
+}
+if (typeof datax != "number"){
+    console.log("The data needs to be a number.");
+    process.exit(1);
+}
 
 const client = net.connect({port: 10001, host: "192.168.0.210"}, () => {
     console.log('Connected');
-    const c1 = Buffer.from('>>o');
-    //client.write(c1);
 });
 client.on('data', (data) => {
     console.log(data);
@@ -21,11 +46,11 @@ client.on('data', (data) => {
         client.write(">>o");
     } else if (data.equals(fa)){
         console.log("Received \"A?\"");
-        const sendBuffer = Buffer.from([34]);
+        const sendBuffer = Buffer.from([address]);
         client.write(sendBuffer);
     } else if (data.equals(fd)){
         console.log("Received \"D?\"");
-        const sendBuffer = Buffer.from([6]);
+        const sendBuffer = Buffer.from([datax]);
         client.write(sendBuffer);
     } else if (data.equals(o) || data.equals(k)){
         client.end();
